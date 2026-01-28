@@ -726,6 +726,113 @@
             border-left: 2px dashed var(--border);
         }
 
+        /* Slide 4: Tree Example - Entity Kit Boxes */
+        .entity-kit-box {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+            min-width: 320px;
+            display: inline-block;
+        }
+
+        .entity-kit-box.shared {
+            border-style: dashed;
+        }
+
+        .kit-box-header {
+            padding: 0.6rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .kit-box-type {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            padding: 0.2rem 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .kit-box-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .kit-box-content {
+            padding: 0.75rem 1rem;
+        }
+
+        .kit-box-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .kit-box-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .kit-box-label {
+            color: var(--text-muted);
+            white-space: nowrap;
+            min-width: 75px;
+        }
+
+        .kit-box-value {
+            color: var(--text-secondary);
+        }
+
+        .kit-box-value.muted {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .kit-box-products {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .product-chip {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid var(--accent-amber);
+            border-radius: 6px;
+            padding: 0.35rem 0.6rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .product-chip.bucket {
+            background: rgba(34, 211, 238, 0.15);
+            border-color: var(--accent-cyan);
+        }
+
+        .product-name {
+            font-weight: 600;
+            font-size: 0.7rem;
+            color: var(--text-primary);
+        }
+
+        .product-coverage {
+            font-size: 0.65rem;
+            color: var(--accent-emerald);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .product-chip.bucket .product-coverage {
+            color: var(--accent-cyan);
+        }
+
         /* Shared Entity Highlight */
         .shared-entity-section {
             flex: 1;
@@ -1398,9 +1505,10 @@
         <button class="nav-btn active" data-slide="1">1. Entity Kit</button>
         <button class="nav-btn" data-slide="2">2. Typical Patterns</button>
         <button class="nav-btn" data-slide="3">3. Mental Model</button>
-        <button class="nav-btn" data-slide="4">4. Tree Example</button>
-        <button class="nav-btn" data-slide="5">5. Coverage Models</button>
-        <button class="nav-btn" data-slide="6">6. Transaction Flow</button>
+        <button class="nav-btn" data-slide="4">4. Tree (Simple)</button>
+        <button class="nav-btn" data-slide="5">5. Tree (Detailed)</button>
+        <button class="nav-btn" data-slide="6">6. Coverage Models</button>
+        <button class="nav-btn" data-slide="7">7. Transaction Flow</button>
     </nav>
 
     <div class="slides-container">
@@ -1639,17 +1747,16 @@
                         <p class="insight-text">Each product desk answers these questions for their <strong>typical level</strong>—but the system lets <strong>ANY level</strong> answer "yes." This means you can handle exceptions without system changes. The hierarchy is flexible; your business processes determine how you use it.</p>
                     </div>
 
-              
                 </div>
             </div>
         </section>
 
-        <!-- Slide 4: Tree Example -->
+        <!-- Slide 4: Tree Example (Simple) -->
         <section class="slide" id="slide-4">
             <div class="slide-content">
                 <header class="slide-header">
                     <div class="slide-number">Section 04</div>
-                    <h1 class="slide-title">Real-World Tree Example</h1>
+                    <h1 class="slide-title">Tree Example (Simple View)</h1>
                     <p class="slide-subtitle">A fictional entity structure showing how products, documents, and coverage attach at different levels—including a shared entity under multiple parents.</p>
                 </header>
 
@@ -1668,59 +1775,32 @@
                             </div>
                             
                             <div class="tree-children">
-                                <!-- Parent 1 - NOW HAS TWO PRODUCTS -->
+                                <!-- Parent 1 -->
                                 <div class="tree-node">
                                     <div class="node-content" style="--node-color: #3b82f6">
                                         <span class="node-type">Parent</span>
                                         <span class="node-name">Acme Capital LLC</span>
                                         <div class="node-attachments">
+                                            <span class="attachment-tag tag-product">Product 1</span>
                                             <span class="attachment-tag tag-docs">KYC ✓</span>
+                                            <span class="attachment-tag tag-coverage">Team Alpha</span>
                                         </div>
                                     </div>
                                     
-                                    <!-- Product attachments for Parent 1 -->
                                     <div class="tree-children">
-                                        <div class="tree-node">
-                                            <div class="node-content" style="--node-color: #f59e0b; background: rgba(245, 158, 11, 0.1);">
-                                                <span class="node-type" style="background: rgba(245, 158, 11, 0.2);">Product</span>
-                                                <span class="node-name">Product 1</span>
-                                                <div class="node-attachments">
-                                                    <span class="attachment-tag tag-coverage">Sarah (Coverage)</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="tree-node">
-                                            <div class="node-content" style="--node-color: #f59e0b; background: rgba(245, 158, 11, 0.1);">
-                                                <span class="node-type" style="background: rgba(245, 158, 11, 0.2);">Product</span>
-                                                <span class="node-name">Product 3</span>
-                                                <div class="node-attachments">
-                                                    <span class="attachment-tag tag-coverage">Mike (Coverage)</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
                                         <!-- Child under Parent 1 -->
                                         <div class="tree-node">
                                             <div class="node-content" style="--node-color: #a855f7">
                                                 <span class="node-type">Child</span>
                                                 <span class="node-name">Acme Growth Fund</span>
                                                 <div class="node-attachments">
+                                                    <span class="attachment-tag tag-product">Product 2</span>
                                                     <span class="attachment-tag tag-docs">KYC ✓</span>
+                                                    <span class="attachment-tag tag-coverage">Team Beta</span>
                                                 </div>
                                             </div>
                                             
                                             <div class="tree-children">
-                                                <!-- Product for this child -->
-                                                <div class="tree-node">
-                                                    <div class="node-content" style="--node-color: #f59e0b; background: rgba(245, 158, 11, 0.1);">
-                                                        <span class="node-type" style="background: rgba(245, 158, 11, 0.2);">Product</span>
-                                                        <span class="node-name">Product 2</span>
-                                                        <div class="node-attachments">
-                                                            <span class="attachment-tag tag-coverage">Team Beta (Desk)</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
                                                 <!-- Shared Entity - appears here -->
                                                 <div class="tree-node">
                                                     <div class="node-content" style="--node-color: #f43f5e; border: 2px dashed #f43f5e">
@@ -1747,59 +1827,32 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Parent 2 - ALSO HAS TWO PRODUCTS -->
+                                <!-- Parent 2 -->
                                 <div class="tree-node">
                                     <div class="node-content" style="--node-color: #3b82f6">
                                         <span class="node-type">Parent</span>
                                         <span class="node-name">Acme Alternatives Ltd</span>
                                         <div class="node-attachments">
+                                            <span class="attachment-tag tag-product">Product 1</span>
                                             <span class="attachment-tag tag-docs">KYC ✓</span>
+                                            <span class="attachment-tag tag-coverage">Team Gamma</span>
                                         </div>
                                     </div>
                                     
                                     <div class="tree-children">
-                                        <!-- Products for Parent 2 -->
-                                        <div class="tree-node">
-                                            <div class="node-content" style="--node-color: #f59e0b; background: rgba(245, 158, 11, 0.1);">
-                                                <span class="node-type" style="background: rgba(245, 158, 11, 0.2);">Product</span>
-                                                <span class="node-name">Product 1</span>
-                                                <div class="node-attachments">
-                                                    <span class="attachment-tag tag-coverage">John (Coverage)</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="tree-node">
-                                            <div class="node-content" style="--node-color: #f59e0b; background: rgba(245, 158, 11, 0.1);">
-                                                <span class="node-type" style="background: rgba(245, 158, 11, 0.2);">Product</span>
-                                                <span class="node-name">Product 2</span>
-                                                <div class="node-attachments">
-                                                    <span class="attachment-tag tag-coverage">Team Beta (Desk)</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
                                         <!-- Child under Parent 2 -->
                                         <div class="tree-node">
                                             <div class="node-content" style="--node-color: #a855f7">
                                                 <span class="node-type">Child</span>
                                                 <span class="node-name">Acme PE Master Fund</span>
                                                 <div class="node-attachments">
+                                                    <span class="attachment-tag tag-product">Product 2</span>
                                                     <span class="attachment-tag tag-docs">KYC ✓</span>
+                                                    <span class="attachment-tag tag-coverage">Team Beta</span>
                                                 </div>
                                             </div>
                                             
                                             <div class="tree-children">
-                                                <!-- Product for this child -->
-                                                <div class="tree-node">
-                                                    <div class="node-content" style="--node-color: #f59e0b; background: rgba(245, 158, 11, 0.1);">
-                                                        <span class="node-type" style="background: rgba(245, 158, 11, 0.2);">Product</span>
-                                                        <span class="node-name">Product 2</span>
-                                                        <div class="node-attachments">
-                                                            <span class="attachment-tag tag-coverage">Team Beta (Desk)</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
                                                 <!-- Shared Entity - also appears here -->
                                                 <div class="tree-node">
                                                     <div class="node-content" style="--node-color: #f43f5e; border: 2px dashed #f43f5e">
@@ -1831,12 +1884,289 @@
                                 <span>Child (Subfund)</span>
                             </div>
                             <div class="legend-item">
-                                <div class="legend-color" style="background: #f59e0b"></div>
-                                <span>Product (with Coverage)</span>
+                                <div class="legend-color" style="background: #f43f5e; border: 2px dashed #f43f5e"></div>
+                                <span>Shared Entity</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="shared-entity-section">
+                        <div class="shared-highlight">
+                            <div class="shared-title">
+                                <span>⚡</span> Shared Entity Example
+                            </div>
+                            <div class="shared-diagram">
+                                <div class="shared-line"><span class="shared-parent1">Acme Growth Fund</span></div>
+                                <div class="shared-line">&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="shared-entity">Global Opportunities Sleeve</span></div>
+                                <div class="shared-line" style="margin-top: 1rem"><span class="shared-parent2">Acme PE Master Fund</span></div>
+                                <div class="shared-line">&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="shared-entity">Global Opportunities Sleeve</span></div>
+                            </div>
+                        </div>
+                        
+                        <div class="shared-explanation">
+                            <div class="shared-explanation-title">Why Shared Entities Matter</div>
+                            <p class="shared-explanation-text">
+                                The <strong style="color: var(--accent-rose)">Global Opportunities Sleeve</strong> is the same legal entity, but it participates in two different fund structures.
+                                <br><br>
+                                In a rigid system, you'd need to duplicate this entity or create complex workarounds. With the flexible Entity Kit model, the same entity can appear in multiple hierarchies while maintaining its single identity for KYC, compliance, and reporting purposes.
+                                <br><br>
+                                <strong>The entity's "kit" (documents, products, coverage) can be configured independently at each location in the hierarchy if needed</strong>—or shared across both.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: Tree Example (Detailed) -->
+        <section class="slide" id="slide-5">
+            <div class="slide-content">
+                <header class="slide-header">
+                    <div class="slide-number">Section 05</div>
+                    <h1 class="slide-title">Tree Example (Detailed View)</h1>
+                    <p class="slide-subtitle">Entity Kit boxes showing products with coverage inside each entity—demonstrates the repeating structure at every level.</p>
+                </header>
+
+                <div class="tree-container">
+                    <div class="tree-diagram">
+                        <div class="tree-title">Acme Global Holdings - Entity Hierarchy</div>
+                        
+                        <!-- Grandparent -->
+                        <div class="tree-node" style="--depth: 0">
+                            <div class="entity-kit-box" style="border-color: #64748b;">
+                                <div class="kit-box-header" style="background: rgba(100, 116, 139, 0.2);">
+                                    <span class="kit-box-type">Grandparent</span>
+                                    <span class="kit-box-name">Acme Global Holdings (Umbrella)</span>
+                                </div>
+                                <div class="kit-box-content">
+                                    <div class="kit-box-row">
+                                        <span class="kit-box-label">📄 Docs:</span>
+                                        <span class="kit-box-value muted">Reporting Only</span>
+                                    </div>
+                                    <div class="kit-box-row">
+                                        <span class="kit-box-label">📦 Products:</span>
+                                        <span class="kit-box-value muted">None</span>
+                                    </div>
+                                    <div class="kit-box-row">
+                                        <span class="kit-box-label">👥 Coverage:</span>
+                                        <span class="kit-box-value muted">N/A</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="tree-children">
+                                <!-- Parent 1: Acme Capital LLC -->
+                                <div class="tree-node">
+                                    <div class="entity-kit-box" style="border-color: #3b82f6;">
+                                        <div class="kit-box-header" style="background: rgba(59, 130, 246, 0.2);">
+                                            <span class="kit-box-type">Parent</span>
+                                            <span class="kit-box-name">Acme Capital LLC</span>
+                                        </div>
+                                        <div class="kit-box-content">
+                                            <div class="kit-box-row">
+                                                <span class="kit-box-label">📄 Docs:</span>
+                                                <span class="kit-box-value">KYC ✓ | Onboarding ✓</span>
+                                            </div>
+                                            <div class="kit-box-row">
+                                                <span class="kit-box-label">📦 Products:</span>
+                                                <div class="kit-box-products">
+                                                    <div class="product-chip">
+                                                        <span class="product-name">Product 1</span>
+                                                        <span class="product-coverage">→ Sarah</span>
+                                                    </div>
+                                                    <div class="product-chip">
+                                                        <span class="product-name">Product 3</span>
+                                                        <span class="product-coverage">→ Mike</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tree-children">
+                                        <!-- Child: Acme Growth Fund -->
+                                        <div class="tree-node">
+                                            <div class="entity-kit-box" style="border-color: #a855f7;">
+                                                <div class="kit-box-header" style="background: rgba(168, 85, 247, 0.2);">
+                                                    <span class="kit-box-type">Child</span>
+                                                    <span class="kit-box-name">Acme Growth Fund</span>
+                                                </div>
+                                                <div class="kit-box-content">
+                                                    <div class="kit-box-row">
+                                                        <span class="kit-box-label">📄 Docs:</span>
+                                                        <span class="kit-box-value">KYC ✓</span>
+                                                    </div>
+                                                    <div class="kit-box-row">
+                                                        <span class="kit-box-label">📦 Products:</span>
+                                                        <div class="kit-box-products">
+                                                            <div class="product-chip bucket">
+                                                                <span class="product-name">Product 2</span>
+                                                                <span class="product-coverage">→ Desk B (bucket)</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="tree-children">
+                                                <!-- Sub-Child: Shared Entity -->
+                                                <div class="tree-node">
+                                                    <div class="entity-kit-box shared" style="border-color: #f43f5e;">
+                                                        <div class="kit-box-header" style="background: rgba(244, 63, 94, 0.2);">
+                                                            <span class="kit-box-type">Sub-Child</span>
+                                                            <span class="kit-box-name">⚡ Global Opportunities Sleeve</span>
+                                                        </div>
+                                                        <div class="kit-box-content">
+                                                            <div class="kit-box-row">
+                                                                <span class="kit-box-label">📄 Docs:</span>
+                                                                <span class="kit-box-value muted">Inherited</span>
+                                                            </div>
+                                                            <div class="kit-box-row">
+                                                                <span class="kit-box-label">📦 Products:</span>
+                                                                <div class="kit-box-products">
+                                                                    <div class="product-chip bucket">
+                                                                        <span class="product-name">Product 2</span>
+                                                                        <span class="product-coverage">→ Desk B</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Child: Acme Value Fund -->
+                                        <div class="tree-node">
+                                            <div class="entity-kit-box" style="border-color: #a855f7;">
+                                                <div class="kit-box-header" style="background: rgba(168, 85, 247, 0.2);">
+                                                    <span class="kit-box-type">Child</span>
+                                                    <span class="kit-box-name">Acme Value Fund</span>
+                                                </div>
+                                                <div class="kit-box-content">
+                                                    <div class="kit-box-row">
+                                                        <span class="kit-box-label">📄 Docs:</span>
+                                                        <span class="kit-box-value">KYC ✓</span>
+                                                    </div>
+                                                    <div class="kit-box-row">
+                                                        <span class="kit-box-label">📦 Products:</span>
+                                                        <span class="kit-box-value muted">None yet</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Parent 2: Acme Alternatives Ltd -->
+                                <div class="tree-node">
+                                    <div class="entity-kit-box" style="border-color: #3b82f6;">
+                                        <div class="kit-box-header" style="background: rgba(59, 130, 246, 0.2);">
+                                            <span class="kit-box-type">Parent</span>
+                                            <span class="kit-box-name">Acme Alternatives Ltd</span>
+                                        </div>
+                                        <div class="kit-box-content">
+                                            <div class="kit-box-row">
+                                                <span class="kit-box-label">📄 Docs:</span>
+                                                <span class="kit-box-value">KYC ✓ | Onboarding ✓</span>
+                                            </div>
+                                            <div class="kit-box-row">
+                                                <span class="kit-box-label">📦 Products:</span>
+                                                <div class="kit-box-products">
+                                                    <div class="product-chip">
+                                                        <span class="product-name">Product 1</span>
+                                                        <span class="product-coverage">→ John</span>
+                                                    </div>
+                                                    <div class="product-chip bucket">
+                                                        <span class="product-name">Product 2</span>
+                                                        <span class="product-coverage">→ Desk B (bucket)</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tree-children">
+                                        <!-- Child: Acme PE Master Fund -->
+                                        <div class="tree-node">
+                                            <div class="entity-kit-box" style="border-color: #a855f7;">
+                                                <div class="kit-box-header" style="background: rgba(168, 85, 247, 0.2);">
+                                                    <span class="kit-box-type">Child</span>
+                                                    <span class="kit-box-name">Acme PE Master Fund</span>
+                                                </div>
+                                                <div class="kit-box-content">
+                                                    <div class="kit-box-row">
+                                                        <span class="kit-box-label">📄 Docs:</span>
+                                                        <span class="kit-box-value">KYC ✓</span>
+                                                    </div>
+                                                    <div class="kit-box-row">
+                                                        <span class="kit-box-label">📦 Products:</span>
+                                                        <div class="kit-box-products">
+                                                            <div class="product-chip bucket">
+                                                                <span class="product-name">Product 2</span>
+                                                                <span class="product-coverage">→ Desk B (bucket)</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="tree-children">
+                                                <!-- Sub-Child: Shared Entity -->
+                                                <div class="tree-node">
+                                                    <div class="entity-kit-box shared" style="border-color: #f43f5e;">
+                                                        <div class="kit-box-header" style="background: rgba(244, 63, 94, 0.2);">
+                                                            <span class="kit-box-type">Sub-Child</span>
+                                                            <span class="kit-box-name">⚡ Global Opportunities Sleeve</span>
+                                                        </div>
+                                                        <div class="kit-box-content">
+                                                            <div class="kit-box-row">
+                                                                <span class="kit-box-label">📄 Docs:</span>
+                                                                <span class="kit-box-value muted">Inherited</span>
+                                                            </div>
+                                                            <div class="kit-box-row">
+                                                                <span class="kit-box-label">📦 Products:</span>
+                                                                <div class="kit-box-products">
+                                                                    <div class="product-chip bucket">
+                                                                        <span class="product-name">Product 2</span>
+                                                                        <span class="product-coverage">→ Desk B</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #64748b"></div>
+                                <span>Grandparent</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #3b82f6"></div>
+                                <span>Parent</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #a855f7"></div>
+                                <span>Child</span>
                             </div>
                             <div class="legend-item">
                                 <div class="legend-color" style="background: #f43f5e; border: 2px dashed #f43f5e"></div>
                                 <span>Shared Entity</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #f59e0b"></div>
+                                <span>Product (per-entity coverage)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #22d3ee"></div>
+                                <span>Product (desk bucket)</span>
                             </div>
                         </div>
                     </div>
@@ -1884,11 +2214,11 @@
             </div>
         </section>
 
-        <!-- Slide 5: Coverage Models -->
-        <section class="slide" id="slide-5">
+        <!-- Slide 6: Coverage Models -->
+        <section class="slide" id="slide-6">
             <div class="slide-content">
                 <header class="slide-header">
-                    <div class="slide-number">Section 05</div>
+                    <div class="slide-number">Section 06</div>
                     <h1 class="slide-title">Three Coverage Models</h1>
                     <p class="slide-subtitle">Different product desks operate with different coverage philosophies. The system supports all three.</p>
                 </header>
@@ -2021,11 +2351,11 @@
             </div>
         </section>
 
-        <!-- Slide 6: Transaction Flow -->
-        <section class="slide" id="slide-6">
+        <!-- Slide 7: Transaction Flow -->
+        <section class="slide" id="slide-7">
             <div class="slide-content">
                 <header class="slide-header">
-                    <div class="slide-number">Section 06</div>
+                    <div class="slide-number">Section 07</div>
                     <h1 class="slide-title">Transaction Resolution Flow</h1>
                     <p class="slide-subtitle">How a transaction finds its coverage owner — based on the product's configured coverage model.</p>
                 </header>
@@ -2238,7 +2568,7 @@
             const currentNum = parseInt(currentSlide.id.split('-')[1]);
             
             if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-                const nextNum = Math.min(currentNum + 1, 6);
+                const nextNum = Math.min(currentNum + 1, 7);
                 document.querySelector(`[data-slide="${nextNum}"]`).click();
             } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
                 const prevNum = Math.max(currentNum - 1, 1);
