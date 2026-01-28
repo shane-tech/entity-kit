@@ -1,0 +1,2250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Entity Hierarchy - Business Overview</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0f1a;
+            --bg-card: #131a2b;
+            --bg-card-hover: #1a2338;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #22d3ee;
+            --accent-purple: #a855f7;
+            --accent-amber: #f59e0b;
+            --accent-emerald: #10b981;
+            --accent-rose: #f43f5e;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(10, 15, 26, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .nav-btn.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+
+        /* Slides Container */
+        .slides-container {
+            padding-top: 80px;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 4rem 2rem;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .slide-header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .slide-number {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 0.5rem;
+        }
+
+        .slide-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .slide-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Slide 1: Entity Kit */
+        .entity-kit-container {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .kit-visual {
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(59, 130, 246, 0.1) 100%);
+            border: 2px solid var(--accent-blue);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kit-visual::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .kit-header {
+            position: relative;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .kit-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+
+        .kit-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .kit-badge {
+            display: inline-block;
+            background: rgba(34, 211, 238, 0.2);
+            color: var(--accent-cyan);
+            font-size: 0.7rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            margin-top: 0.5rem;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .kit-components {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .kit-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .kit-item:nth-child(1) { border-left-color: var(--accent-blue); }
+        .kit-item:nth-child(2) { border-left-color: var(--accent-purple); }
+        .kit-item:nth-child(3) { border-left-color: var(--accent-amber); }
+        .kit-item:nth-child(4) { border-left-color: var(--accent-emerald); }
+        .kit-item:nth-child(5) { border-left-color: var(--accent-rose); }
+
+        .kit-item-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .kit-item:nth-child(1) .kit-item-icon { background: rgba(59, 130, 246, 0.2); }
+        .kit-item:nth-child(2) .kit-item-icon { background: rgba(168, 85, 247, 0.2); }
+        .kit-item:nth-child(3) .kit-item-icon { background: rgba(245, 158, 11, 0.2); }
+        .kit-item:nth-child(4) .kit-item-icon { background: rgba(16, 185, 129, 0.2); }
+        .kit-item:nth-child(5) .kit-item-icon { background: rgba(244, 63, 94, 0.2); }
+
+        .kit-item-text {
+            flex: 1;
+        }
+
+        .kit-item-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .kit-item-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .explanation-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .exp-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .exp-card-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .exp-card-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .exp-highlight {
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        /* Slide 2: Typical Patterns */
+        .patterns-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .pattern-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pattern-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .pattern-card.product1::before {
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+        }
+
+        .pattern-card.product2::before {
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-rose));
+        }
+
+        .pattern-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .pattern-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .product1 .pattern-icon {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .product2 .pattern-icon {
+            background: rgba(168, 85, 247, 0.2);
+        }
+
+        .pattern-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .pattern-desk {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .pattern-hierarchy {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hierarchy-level {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin-left: var(--indent, 0);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .hierarchy-level.inactive {
+            opacity: 0.4;
+        }
+
+        .hierarchy-level.primary {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid var(--accent-blue);
+        }
+
+        .product2 .hierarchy-level.primary {
+            background: rgba(168, 85, 247, 0.15);
+            border: 1px solid var(--accent-purple);
+        }
+
+        .level-marker {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .level-marker.grandparent { background: var(--text-muted); }
+        .level-marker.parent { background: var(--accent-blue); }
+        .level-marker.child { background: var(--accent-purple); }
+        .level-marker.subchild { background: var(--accent-emerald); }
+
+        .level-label {
+            flex: 1;
+        }
+
+        .level-tag {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+        }
+
+        .level-tag.typical {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-emerald);
+        }
+
+        .level-tag.possible {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--accent-amber);
+        }
+
+        .pattern-note {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 3px solid var(--accent-amber);
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .pattern-note strong {
+            color: var(--accent-amber);
+        }
+
+        /* Comparison Table */
+        .comparison-section {
+            margin-top: 3rem;
+        }
+
+        .comparison-title {
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .comparison-table {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .comparison-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .comparison-row:last-child {
+            border-bottom: none;
+        }
+
+        .comparison-cell {
+            padding: 1.25rem 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .comparison-header {
+            background: rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .comparison-cell:not(:last-child) {
+            border-right: 1px solid var(--border);
+        }
+
+        .cell-today {
+            color: var(--text-secondary);
+        }
+
+        .cell-capability {
+            color: var(--accent-emerald);
+        }
+
+        /* Slide 3: Mental Model */
+        .mental-model-container {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        .process-flow {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .process-step {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            width: 280px;
+            text-align: center;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .process-step::after {
+            content: '→';
+            position: absolute;
+            right: -1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--accent-cyan);
+        }
+
+        .process-step:last-child::after {
+            display: none;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin: 0 auto 1rem;
+        }
+
+        .step-question {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .step-answer {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .step-action {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--accent-cyan);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .key-insight {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(168, 85, 247, 0.1));
+            border: 1px solid var(--accent-blue);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .insight-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .insight-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--accent-cyan);
+        }
+
+        .insight-text {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        /* Analogy Section */
+        .analogy-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .analogy-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .analogy-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .analogy-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .analogy-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Slide 4: Tree Example */
+        .tree-container {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        .tree-diagram {
+            flex: 2;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .tree-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .tree-node {
+            margin-left: var(--depth, 0);
+            margin-bottom: 0.5rem;
+        }
+
+        .node-content {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--node-color, var(--accent-blue));
+            position: relative;
+        }
+
+        .node-content::before {
+            content: '';
+            position: absolute;
+            left: -24px;
+            top: 50%;
+            width: 20px;
+            height: 2px;
+            background: var(--border);
+        }
+
+        .tree-node:first-child > .node-content::before {
+            display: none;
+        }
+
+        .node-type {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            padding: 0.15rem 0.4rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        .node-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .node-attachments {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: auto;
+        }
+
+        .attachment-tag {
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .tag-product { background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); }
+        .tag-docs { background: rgba(168, 85, 247, 0.2); color: var(--accent-purple); }
+        .tag-coverage { background: rgba(16, 185, 129, 0.2); color: var(--accent-emerald); }
+
+        .tree-children {
+            margin-left: 2.5rem;
+            padding-left: 1rem;
+            border-left: 2px dashed var(--border);
+        }
+
+        /* Shared Entity Highlight */
+        .shared-entity-section {
+            flex: 1;
+            min-width: 350px;
+        }
+
+        .shared-highlight {
+            background: linear-gradient(135deg, rgba(244, 63, 94, 0.15), rgba(168, 85, 247, 0.15));
+            border: 2px solid var(--accent-rose);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .shared-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--accent-rose);
+        }
+
+        .shared-diagram {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            line-height: 1.8;
+        }
+
+        .shared-line {
+            color: var(--text-secondary);
+        }
+
+        .shared-entity {
+            color: var(--accent-rose);
+            font-weight: 700;
+        }
+
+        .shared-parent1 {
+            color: var(--accent-blue);
+        }
+
+        .shared-parent2 {
+            color: var(--accent-purple);
+        }
+
+        .shared-explanation {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .shared-explanation-title {
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .shared-explanation-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border-radius: 12px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        /* Slide 5: Coverage Models */
+        .coverage-models-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .coverage-model-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .coverage-model-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .coverage-model-card.model1::before {
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+        }
+
+        .coverage-model-card.model2::before {
+            background: linear-gradient(90deg, var(--accent-amber), var(--accent-rose));
+        }
+
+        .coverage-model-card.model3::before {
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-emerald));
+        }
+
+        .model-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .model-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .model1 .model-icon { background: rgba(59, 130, 246, 0.2); }
+        .model2 .model-icon { background: rgba(245, 158, 11, 0.2); }
+        .model3 .model-icon { background: rgba(168, 85, 247, 0.2); }
+
+        .model-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .model-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .model-description {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            border-left: 3px solid var(--border);
+        }
+
+        .model1 .model-description { border-left-color: var(--accent-blue); }
+        .model2 .model-description { border-left-color: var(--accent-amber); }
+        .model3 .model-description { border-left-color: var(--accent-purple); }
+
+        .model-diagram {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            min-height: 200px;
+        }
+
+        .diagram-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        .diagram-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .diagram-entity {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid var(--accent-blue);
+            border-radius: 6px;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
+
+        .diagram-product {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid var(--accent-amber);
+            border-radius: 6px;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.75rem;
+            margin-left: 1rem;
+            white-space: nowrap;
+        }
+
+        .diagram-coverage {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid var(--accent-emerald);
+            border-radius: 6px;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.75rem;
+            margin-left: auto;
+            white-space: nowrap;
+        }
+
+        .diagram-arrow {
+            color: var(--text-muted);
+            margin: 0 0.5rem;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .diagram-bucket {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(244, 63, 94, 0.2));
+            border: 2px solid var(--accent-amber);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .bucket-label {
+            font-weight: 700;
+            color: var(--accent-amber);
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .bucket-sublabel {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .diagram-entities-flow {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px dashed var(--border);
+        }
+
+        .flow-entity {
+            text-align: center;
+        }
+
+        .flow-entity-name {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .flow-entity-product {
+            font-size: 0.65rem;
+            color: var(--accent-amber);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .flow-arrow-up {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .diagram-attribute-box {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(16, 185, 129, 0.2));
+            border: 2px solid var(--accent-purple);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .attribute-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .attribute-value {
+            font-weight: 700;
+            color: var(--accent-purple);
+            font-size: 0.9rem;
+        }
+
+        .attribute-coverage {
+            font-size: 0.75rem;
+            color: var(--accent-emerald);
+            margin-top: 0.5rem;
+        }
+
+        .model-key-point {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        .key-point-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .key-point-text {
+            color: var(--text-secondary);
+        }
+
+        .key-point-text strong {
+            color: var(--text-primary);
+        }
+
+        /* Comparison Table for Coverage */
+        .coverage-comparison {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .coverage-comparison-row {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .coverage-comparison-row:last-child {
+            border-bottom: none;
+        }
+
+        .coverage-comparison-cell {
+            padding: 1rem 1.25rem;
+            font-size: 0.85rem;
+            border-right: 1px solid var(--border);
+        }
+
+        .coverage-comparison-cell:last-child {
+            border-right: none;
+        }
+
+        .coverage-comparison-header {
+            background: rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .cell-model1 { color: var(--accent-cyan); }
+        .cell-model2 { color: var(--accent-amber); }
+        .cell-model3 { color: var(--accent-purple); }
+
+        /* Slide 6: Transaction Flow */
+        .transaction-flow-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .flow-scenario {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .flow-scenario-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .flow-scenario-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .flow-scenario.scenario1 .flow-scenario-icon { background: rgba(59, 130, 246, 0.2); }
+        .flow-scenario.scenario2 .flow-scenario-icon { background: rgba(245, 158, 11, 0.2); }
+        .flow-scenario.scenario3 .flow-scenario-icon { background: rgba(168, 85, 247, 0.2); }
+
+        .flow-scenario-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .flow-scenario-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .flow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .flow-step-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--border);
+            width: 100%;
+        }
+
+        .flow-step-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .flow-step-value {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .flow-step-detail {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .flow-connector {
+            font-size: 1.5rem;
+            color: var(--accent-cyan);
+            flex-shrink: 0;
+        }
+
+        .flow-step-box.highlight-blue {
+            border-color: var(--accent-blue);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .flow-step-box.highlight-amber {
+            border-color: var(--accent-amber);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .flow-step-box.highlight-purple {
+            border-color: var(--accent-purple);
+            background: rgba(168, 85, 247, 0.1);
+        }
+
+        .flow-step-box.highlight-emerald {
+            border-color: var(--accent-emerald);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .flow-resolution {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(34, 211, 238, 0.15));
+            border: 1px solid var(--accent-emerald);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .resolution-icon {
+            font-size: 1.5rem;
+        }
+
+        .resolution-text {
+            flex: 1;
+        }
+
+        .resolution-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .resolution-value {
+            font-weight: 700;
+            color: var(--accent-emerald);
+        }
+
+        /* Product Configuration Callout */
+        .product-config-callout {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(168, 85, 247, 0.1));
+            border: 1px solid var(--accent-blue);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .config-callout-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .config-callout-icon {
+            font-size: 2rem;
+        }
+
+        .config-callout-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        .config-callout-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .config-code-block {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 1.5rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            overflow-x: auto;
+        }
+
+        .code-line {
+            margin-bottom: 0.25rem;
+        }
+
+        .code-key {
+            color: var(--accent-cyan);
+        }
+
+        .code-value {
+            color: var(--accent-amber);
+        }
+
+        .code-comment {
+            color: var(--text-muted);
+        }
+
+        .code-indent {
+            margin-left: 1.5rem;
+        }
+
+        .code-bracket {
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .entity-kit-container,
+            .patterns-grid,
+            .tree-container {
+                grid-template-columns: 1fr;
+            }
+
+            .coverage-models-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .process-flow {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .process-step::after {
+                content: '↓';
+                right: 50%;
+                transform: translateX(50%);
+                top: auto;
+                bottom: -1.5rem;
+            }
+
+            .analogy-section {
+                grid-template-columns: 1fr;
+            }
+
+            .flow-diagram {
+                flex-direction: column;
+            }
+
+            .flow-connector {
+                transform: rotate(90deg);
+            }
+
+            .coverage-comparison-row {
+                grid-template-columns: 1fr;
+            }
+
+            .coverage-comparison-cell {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .coverage-comparison-cell:last-child {
+                border-bottom: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                flex-wrap: wrap;
+                padding: 0.75rem 1rem;
+            }
+
+            .nav-btn {
+                font-size: 0.65rem;
+                padding: 0.4rem 0.75rem;
+            }
+
+            .slide-title {
+                font-size: 1.75rem;
+            }
+
+            .comparison-row {
+                grid-template-columns: 1fr;
+            }
+
+            .comparison-cell:not(:last-child) {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <button class="nav-btn active" data-slide="1">1. Entity Kit</button>
+        <button class="nav-btn" data-slide="2">2. Typical Patterns</button>
+        <button class="nav-btn" data-slide="3">3. Mental Model</button>
+        <button class="nav-btn" data-slide="4">4. Tree Example</button>
+        <button class="nav-btn" data-slide="5">5. Coverage Models</button>
+        <button class="nav-btn" data-slide="6">6. Transaction Flow</button>
+    </nav>
+
+    <div class="slides-container">
+        <!-- Slide 1: Entity Kit -->
+        <section class="slide active" id="slide-1">
+            <div class="slide-content">
+                <header class="slide-header">
+                    <div class="slide-number">Section 01</div>
+                    <h1 class="slide-title">The Entity Kit</h1>
+                    <p class="slide-subtitle">Every box in the hierarchy is built from the same standardized kit. The structure is identical—what you put inside differs by business need.</p>
+                </header>
+
+                <div class="entity-kit-container">
+                    <div class="kit-visual">
+                        <div class="kit-header">
+                            <div class="kit-icon">📦</div>
+                            <div class="kit-title">Entity Kit</div>
+                            <div class="kit-badge">Available at ANY hierarchy level</div>
+                        </div>
+                        <div class="kit-components">
+                            <div class="kit-item">
+                                <div class="kit-item-icon">🏢</div>
+                                <div class="kit-item-text">
+                                    <div class="kit-item-label">Identity & Legal Info</div>
+                                    <div class="kit-item-desc">Name, entity type, legal jurisdiction</div>
+                                </div>
+                            </div>
+                            <div class="kit-item">
+                                <div class="kit-item-icon">📄</div>
+                                <div class="kit-item-text">
+                                    <div class="kit-item-label">Documents</div>
+                                    <div class="kit-item-desc">KYC, onboarding, compliance docs</div>
+                                </div>
+                            </div>
+                            <div class="kit-item" style="background: rgba(245, 158, 11, 0.05); border: 1px dashed rgba(245, 158, 11, 0.3); border-left: 3px solid var(--accent-amber);">
+                                <div class="kit-item-icon">📦</div>
+                                <div class="kit-item-text">
+                                    <div class="kit-item-label">Products <span style="font-size: 0.65rem; color: var(--accent-amber); margin-left: 0.5rem;">← CAN HAVE COVERAGE</span></div>
+                                    <div class="kit-item-desc">Products attached at this level; each product can optionally have its own coverage & transactions</div>
+                                </div>
+                            </div>
+                            <div class="kit-item">
+                                <div class="kit-item-icon">👥</div>
+                                <div class="kit-item-text">
+                                    <div class="kit-item-label">Coverage <span style="font-size: 0.65rem; color: var(--text-muted); margin-left: 0.5rem;">(Entity-Level)</span></div>
+                                    <div class="kit-item-desc">Who manages/covers this entity (or see product-level coverage above)</div>
+                                </div>
+                            </div>
+                            <div class="kit-item">
+                                <div class="kit-item-icon">🔗</div>
+                                <div class="kit-item-text">
+                                    <div class="kit-item-label">Children</div>
+                                    <div class="kit-item-desc">Sub-entities below this level</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Product Detail Callout -->
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(245, 158, 11, 0.1); border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.3);">
+                            <div style="font-size: 0.75rem; font-weight: 600; color: var(--accent-amber); margin-bottom: 0.5rem;">📦 PRODUCT ATTACHMENT DETAIL</div>
+                            <div style="font-size: 0.7rem; color: var(--text-secondary); font-family: 'Space Mono', monospace; line-height: 1.6;">
+                                Each Product can include:<br>
+                                &nbsp;&nbsp;• Product Documents<br>
+                                &nbsp;&nbsp;• Coverage (product-specific)<br>
+                                &nbsp;&nbsp;• Transactions
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="explanation-cards">
+                        <div class="exp-card">
+                            <div class="exp-card-title">🔑 The Key Concept</div>
+                            <p class="exp-card-text">Think of the Entity Kit as a <span class="exp-highlight">universal building block</span>. Whether you're at the Grandparent level, Parent level, or five levels deep—every entity node has the <span class="exp-highlight">same capabilities</span>.</p>
+                        </div>
+                        <div class="exp-card">
+                            <div class="exp-card-title">💡 Why This Matters</div>
+                            <p class="exp-card-text">Different product desks operate at different levels. <span class="exp-highlight">Product 1</span> might typically work at the Parent level, while <span class="exp-highlight">Product 2</span> operates at the Child level. But the system doesn't force this—it <span class="exp-highlight">enables flexibility</span> for edge cases.</p>
+                        </div>
+                        <div class="exp-card">
+                            <div class="exp-card-title">🎯 Business Benefit</div>
+                            <p class="exp-card-text">When an unusual situation arises—like a Product 1 client who needs setup at the Child level—the system is <span class="exp-highlight">already ready</span>. No rebuilding required. Your business rules determine usage; the system provides capability.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 2: Typical Patterns -->
+        <section class="slide" id="slide-2">
+            <div class="slide-content">
+                <header class="slide-header">
+                    <div class="slide-number">Section 02</div>
+                    <h1 class="slide-title">Typical Usage Patterns</h1>
+                    <p class="slide-subtitle">Each product desk has a "home" level where they typically operate—but the system allows flexibility when needed.</p>
+                </header>
+
+                <div class="patterns-grid">
+                    <div class="pattern-card product1">
+                        <div class="pattern-header">
+                            <div class="pattern-icon">📊</div>
+                            <div>
+                                <div class="pattern-name">Product 1</div>
+                                <div class="pattern-desk">Traditional Product Desk</div>
+                            </div>
+                        </div>
+                        <div class="pattern-hierarchy">
+                            <div class="hierarchy-level inactive" style="--indent: 0">
+                                <span class="level-marker grandparent"></span>
+                                <span class="level-label">Grandparent (Umbrella)</span>
+                                <span class="level-tag possible">Reporting Only</span>
+                            </div>
+                            <div class="hierarchy-level primary" style="--indent: 1.5rem">
+                                <span class="level-marker parent"></span>
+                                <span class="level-label">Parent (Legal Entity)</span>
+                                <span class="level-tag typical">Typical Level</span>
+                            </div>
+                            <div class="hierarchy-level inactive" style="--indent: 3rem">
+                                <span class="level-marker child"></span>
+                                <span class="level-label">Child (Subfund)</span>
+                                <span class="level-tag possible">Possible</span>
+                            </div>
+                            <div class="hierarchy-level inactive" style="--indent: 4.5rem">
+                                <span class="level-marker subchild"></span>
+                                <span class="level-label">Sub-Child</span>
+                                <span class="level-tag possible">Possible</span>
+                            </div>
+                        </div>
+                        <div class="pattern-note">
+                            <strong>Note:</strong> Product 1 desk usually does KYC, onboarding, and coverage at the <strong>Parent level</strong>. But they CAN operate lower if a client's structure requires it.
+                        </div>
+                    </div>
+
+                    <div class="pattern-card product2">
+                        <div class="pattern-header">
+                            <div class="pattern-icon">🔮</div>
+                            <div>
+                                <div class="pattern-name">Product 2</div>
+                                <div class="pattern-desk">Alternative Product Desk</div>
+                            </div>
+                        </div>
+                        <div class="pattern-hierarchy">
+                            <div class="hierarchy-level inactive" style="--indent: 0">
+                                <span class="level-marker grandparent"></span>
+                                <span class="level-label">Grandparent (Umbrella)</span>
+                                <span class="level-tag possible">Possible</span>
+                            </div>
+                            <div class="hierarchy-level inactive" style="--indent: 1.5rem">
+                                <span class="level-marker parent"></span>
+                                <span class="level-label">Parent (Legal Entity)</span>
+                                <span class="level-tag possible">Possible</span>
+                            </div>
+                            <div class="hierarchy-level primary" style="--indent: 3rem">
+                                <span class="level-marker child"></span>
+                                <span class="level-label">Child (Subfund)</span>
+                                <span class="level-tag typical">Typical Level</span>
+                            </div>
+                            <div class="hierarchy-level inactive" style="--indent: 4.5rem">
+                                <span class="level-marker subchild"></span>
+                                <span class="level-label">Sub-Child</span>
+                                <span class="level-tag possible">Possible</span>
+                            </div>
+                        </div>
+                        <div class="pattern-note">
+                            <strong>Note:</strong> Product 2 desk typically operates at the <strong>Child/Subfund level</strong>. Their KYC and coverage usually happens here, but they're not locked to it.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comparison-section">
+                    <div class="comparison-title">System Capability vs. Typical Usage</div>
+                    <div class="comparison-table">
+                        <div class="comparison-row">
+                            <div class="comparison-cell comparison-header">Aspect</div>
+                            <div class="comparison-cell comparison-header">What You Do Today</div>
+                            <div class="comparison-cell comparison-header">What the System Allows</div>
+                        </div>
+                        <div class="comparison-row">
+                            <div class="comparison-cell">Product 1</div>
+                            <div class="comparison-cell cell-today">Parent level only</div>
+                            <div class="comparison-cell cell-capability">✓ Any level (typically use Parent)</div>
+                        </div>
+                        <div class="comparison-row">
+                            <div class="comparison-cell">Product 2</div>
+                            <div class="comparison-cell cell-today">Child level only</div>
+                            <div class="comparison-cell cell-capability">✓ Any level (typically use Child)</div>
+                        </div>
+                        <div class="comparison-row">
+                            <div class="comparison-cell">Coverage</div>
+                            <div class="comparison-cell cell-today">Fixed to one level</div>
+                            <div class="comparison-cell cell-capability">✓ Assignable at any level</div>
+                        </div>
+                        <div class="comparison-row">
+                            <div class="comparison-cell">Documents</div>
+                            <div class="comparison-cell cell-today">Fixed to entity type</div>
+                            <div class="comparison-cell cell-capability">✓ Attachable at any level</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Mental Model -->
+        <section class="slide" id="slide-3">
+            <div class="slide-content">
+                <header class="slide-header">
+                    <div class="slide-number">Section 03</div>
+                    <h1 class="slide-title">Mental Model</h1>
+                    <p class="slide-subtitle">How to think about activating an entity at any level in the hierarchy.</p>
+                </header>
+
+                <div class="mental-model-container">
+                    <div class="process-flow">
+                        <div class="process-step">
+                            <div class="step-number">1</div>
+                            <div class="step-question">Is this where we do KYC?</div>
+                            <div class="step-answer">Does this entity level need onboarding documentation?</div>
+                            <div class="step-action">→ Attach Documents</div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">2</div>
+                            <div class="step-question">Does this level get a Product?</div>
+                            <div class="step-answer">Will transactions happen against this entity?</div>
+                            <div class="step-action">→ Attach Product(s)</div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">3</div>
+                            <div class="step-question">Who manages transactions?</div>
+                            <div class="step-answer">Which team covers this entity's activity?</div>
+                            <div class="step-action">→ Assign Coverage</div>
+                        </div>
+                    </div>
+
+                    <div class="key-insight">
+                        <div class="insight-icon">💡</div>
+                        <div class="insight-title">The Key Insight</div>
+                        <p class="insight-text">Each product desk answers these questions for their <strong>typical level</strong>—but the system lets <strong>ANY level</strong> answer "yes." This means you can handle exceptions without system changes. The hierarchy is flexible; your business processes determine how you use it.</p>
+                    </div>
+
+              
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Tree Example -->
+        <section class="slide" id="slide-4">
+            <div class="slide-content">
+                <header class="slide-header">
+                    <div class="slide-number">Section 04</div>
+                    <h1 class="slide-title">Real-World Tree Example</h1>
+                    <p class="slide-subtitle">A fictional entity structure showing how products, documents, and coverage attach at different levels—including a shared entity under multiple parents.</p>
+                </header>
+
+                <div class="tree-container">
+                    <div class="tree-diagram">
+                        <div class="tree-title">Acme Global Holdings - Entity Hierarchy</div>
+                        
+                        <!-- Grandparent -->
+                        <div class="tree-node" style="--depth: 0">
+                            <div class="node-content" style="--node-color: #64748b">
+                                <span class="node-type">Grandparent</span>
+                                <span class="node-name">Acme Global Holdings (Umbrella)</span>
+                                <div class="node-attachments">
+                                    <span class="attachment-tag tag-docs">Reporting Only</span>
+                                </div>
+                            </div>
+                            
+                            <div class="tree-children">
+                                <!-- Parent 1 - NOW HAS TWO PRODUCTS -->
+                                <div class="tree-node">
+                                    <div class="node-content" style="--node-color: #3b82f6">
+                                        <span class="node-type">Parent</span>
+                                        <span class="node-name">Acme Capital LLC</span>
+                                        <div class="node-attachments">
+                                            <span class="attachment-tag tag-docs">KYC ✓</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Product attachments for Parent 1 -->
+                                    <div class="tree-children">
+                                        <div class="tree-node">
+                                            <div class="node-content" style="--node-color: #f59e0b; background: rgba(245, 158, 11, 0.1);">
+                                                <span class="node-type" style="background: rgba(245, 158, 11, 0.2);">Product</span>
+                                                <span class="node-name">Product 1</span>
+                                                <div class="node-attachments">
+                                                    <span class="attachment-tag tag-coverage">Sarah (Coverage)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tree-node">
+                                            <div class="node-content" style="--node-color: #f59e0b; background: rgba(245, 158, 11, 0.1);">
+                                                <span class="node-type" style="background: rgba(245, 158, 11, 0.2);">Product</span>
+                                                <span class="node-name">Product 3</span>
+                                                <div class="node-attachments">
+                                                    <span class="attachment-tag tag-coverage">Mike (Coverage)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Child under Parent 1 -->
+                                        <div class="tree-node">
+                                            <div class="node-content" style="--node-color: #a855f7">
+                                                <span class="node-type">Child</span>
+                                                <span class="node-name">Acme Growth Fund</span>
+                                                <div class="node-attachments">
+                                                    <span class="attachment-tag tag-docs">KYC ✓</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="tree-children">
+                                                <!-- Product for this child -->
+                                                <div class="tree-node">
+                                                    <div class="node-content" style="--node-color: #f59e0b; background: rgba(245, 158, 11, 0.1);">
+                                                        <span class="node-type" style="background: rgba(245, 158, 11, 0.2);">Product</span>
+                                                        <span class="node-name">Product 2</span>
+                                                        <div class="node-attachments">
+                                                            <span class="attachment-tag tag-coverage">Team Beta (Desk)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Shared Entity - appears here -->
+                                                <div class="tree-node">
+                                                    <div class="node-content" style="--node-color: #f43f5e; border: 2px dashed #f43f5e">
+                                                        <span class="node-type">Sub-Child</span>
+                                                        <span class="node-name">⚡ Global Opportunities Sleeve</span>
+                                                        <div class="node-attachments">
+                                                            <span class="attachment-tag tag-product">Product 2</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Another Child -->
+                                        <div class="tree-node">
+                                            <div class="node-content" style="--node-color: #a855f7">
+                                                <span class="node-type">Child</span>
+                                                <span class="node-name">Acme Value Fund</span>
+                                                <div class="node-attachments">
+                                                    <span class="attachment-tag tag-docs">KYC ✓</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Parent 2 - ALSO HAS TWO PRODUCTS -->
+                                <div class="tree-node">
+                                    <div class="node-content" style="--node-color: #3b82f6">
+                                        <span class="node-type">Parent</span>
+                                        <span class="node-name">Acme Alternatives Ltd</span>
+                                        <div class="node-attachments">
+                                            <span class="attachment-tag tag-docs">KYC ✓</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tree-children">
+                                        <!-- Products for Parent 2 -->
+                                        <div class="tree-node">
+                                            <div class="node-content" style="--node-color: #f59e0b; background: rgba(245, 158, 11, 0.1);">
+                                                <span class="node-type" style="background: rgba(245, 158, 11, 0.2);">Product</span>
+                                                <span class="node-name">Product 1</span>
+                                                <div class="node-attachments">
+                                                    <span class="attachment-tag tag-coverage">John (Coverage)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tree-node">
+                                            <div class="node-content" style="--node-color: #f59e0b; background: rgba(245, 158, 11, 0.1);">
+                                                <span class="node-type" style="background: rgba(245, 158, 11, 0.2);">Product</span>
+                                                <span class="node-name">Product 2</span>
+                                                <div class="node-attachments">
+                                                    <span class="attachment-tag tag-coverage">Team Beta (Desk)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Child under Parent 2 -->
+                                        <div class="tree-node">
+                                            <div class="node-content" style="--node-color: #a855f7">
+                                                <span class="node-type">Child</span>
+                                                <span class="node-name">Acme PE Master Fund</span>
+                                                <div class="node-attachments">
+                                                    <span class="attachment-tag tag-docs">KYC ✓</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="tree-children">
+                                                <!-- Product for this child -->
+                                                <div class="tree-node">
+                                                    <div class="node-content" style="--node-color: #f59e0b; background: rgba(245, 158, 11, 0.1);">
+                                                        <span class="node-type" style="background: rgba(245, 158, 11, 0.2);">Product</span>
+                                                        <span class="node-name">Product 2</span>
+                                                        <div class="node-attachments">
+                                                            <span class="attachment-tag tag-coverage">Team Beta (Desk)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Shared Entity - also appears here -->
+                                                <div class="tree-node">
+                                                    <div class="node-content" style="--node-color: #f43f5e; border: 2px dashed #f43f5e">
+                                                        <span class="node-type">Sub-Child</span>
+                                                        <span class="node-name">⚡ Global Opportunities Sleeve</span>
+                                                        <div class="node-attachments">
+                                                            <span class="attachment-tag tag-product">Product 2</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #64748b"></div>
+                                <span>Grandparent (Umbrella)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #3b82f6"></div>
+                                <span>Parent (Legal Entity)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #a855f7"></div>
+                                <span>Child (Subfund)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #f59e0b"></div>
+                                <span>Product (with Coverage)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #f43f5e; border: 2px dashed #f43f5e"></div>
+                                <span>Shared Entity</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="shared-entity-section">
+                        <div class="shared-highlight">
+                            <div class="shared-title">
+                                <span>⚡</span> Shared Entity Example
+                            </div>
+                            <div class="shared-diagram">
+                                <div class="shared-line"><span class="shared-parent1">Acme Growth Fund</span></div>
+                                <div class="shared-line">&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="shared-entity">Global Opportunities Sleeve</span></div>
+                                <div class="shared-line" style="margin-top: 1rem"><span class="shared-parent2">Acme PE Master Fund</span></div>
+                                <div class="shared-line">&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="shared-entity">Global Opportunities Sleeve</span></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Multiple Products Callout -->
+                        <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(59, 130, 246, 0.15)); border: 2px solid var(--accent-amber); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent-amber);">
+                                <span>📦📦</span> Multiple Products Example
+                            </div>
+                            <div style="background: rgba(0, 0, 0, 0.3); border-radius: 12px; padding: 1rem; font-family: 'Space Mono', monospace; font-size: 0.8rem; line-height: 1.8;">
+                                <div style="color: var(--accent-blue);">Acme Capital LLC</div>
+                                <div style="color: var(--text-secondary);">&nbsp;&nbsp;├── <span style="color: var(--accent-amber);">Product 1</span> → Sarah</div>
+                                <div style="color: var(--text-secondary);">&nbsp;&nbsp;└── <span style="color: var(--accent-amber);">Product 3</span> → Mike</div>
+                                <div style="margin-top: 0.75rem; color: var(--accent-blue);">Acme Alternatives Ltd</div>
+                                <div style="color: var(--text-secondary);">&nbsp;&nbsp;├── <span style="color: var(--accent-amber);">Product 1</span> → John</div>
+                                <div style="color: var(--text-secondary);">&nbsp;&nbsp;└── <span style="color: var(--accent-amber);">Product 2</span> → Team Beta</div>
+                            </div>
+                        </div>
+                        
+                        <div class="shared-explanation">
+                            <div class="shared-explanation-title">Key Observations</div>
+                            <p class="shared-explanation-text">
+                                <strong style="color: var(--accent-amber)">Multiple Products:</strong> A single entity can have multiple products attached, each with its own coverage. Acme Capital has both Product 1 (Sarah) and Product 3 (Mike).
+                                <br><br>
+                                <strong style="color: var(--accent-rose)">Shared Entities:</strong> The Global Opportunities Sleeve participates in two different fund structures while maintaining a single identity.
+                                <br><br>
+                                <strong style="color: var(--accent-emerald)">Coverage Flexibility:</strong> Notice Product 1 has per-entity coverage (Sarah, John) while Product 2 uses desk bucket coverage (Team Beta everywhere).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: Coverage Models -->
+        <section class="slide" id="slide-5">
+            <div class="slide-content">
+                <header class="slide-header">
+                    <div class="slide-number">Section 05</div>
+                    <h1 class="slide-title">Three Coverage Models</h1>
+                    <p class="slide-subtitle">Different product desks operate with different coverage philosophies. The system supports all three.</p>
+                </header>
+
+                <div class="coverage-models-grid">
+                    <!-- Model 1 -->
+                    <div class="coverage-model-card model1">
+                        <div class="model-header">
+                            <div class="model-icon">👤</div>
+                            <div>
+                                <div class="model-title">Product-Level Coverage</div>
+                                <div class="model-subtitle">Per Entity Assignment</div>
+                            </div>
+                        </div>
+                        <div class="model-description">
+                            "I cover THIS entity's Product A business specifically"
+                        </div>
+                        <div class="model-diagram">
+                            <div class="diagram-row">
+                                <span class="diagram-entity">Acme Capital</span>
+                                <span class="diagram-arrow">→</span>
+                                <span class="diagram-product">Product A</span>
+                                <span class="diagram-arrow">→</span>
+                                <span class="diagram-coverage">Sarah</span>
+                            </div>
+                            <div class="diagram-row">
+                                <span class="diagram-entity">Beta Fund</span>
+                                <span class="diagram-arrow">→</span>
+                                <span class="diagram-product">Product A</span>
+                                <span class="diagram-arrow">→</span>
+                                <span class="diagram-coverage">John</span>
+                            </div>
+                            <div class="diagram-row">
+                                <span class="diagram-entity">Gamma LLC</span>
+                                <span class="diagram-arrow">→</span>
+                                <span class="diagram-product">Product A</span>
+                                <span class="diagram-arrow">→</span>
+                                <span class="diagram-coverage">Sarah</span>
+                            </div>
+                        </div>
+                        <div class="model-key-point">
+                            <div class="key-point-label">Coverage Lives On</div>
+                            <div class="key-point-text"><strong>Entity + Product attachment</strong> — each entity-product pair has assigned coverage</div>
+                        </div>
+                    </div>
+
+                    <!-- Model 2 -->
+                    <div class="coverage-model-card model2">
+                        <div class="model-header">
+                            <div class="model-icon">🪣</div>
+                            <div>
+                                <div class="model-title">Product Desk Bucket</div>
+                                <div class="model-subtitle">Global Coverage</div>
+                            </div>
+                        </div>
+                        <div class="model-description">
+                            "Product Desk B covers ALL Product B transactions — no entity-level assignment"
+                        </div>
+                        <div class="model-diagram">
+                            <div class="diagram-bucket">
+                                <div class="bucket-label">Product Desk B Team</div>
+                                <div class="bucket-sublabel">Covers all Product B activity globally</div>
+                            </div>
+                            <div class="diagram-entities-flow">
+                                <div class="flow-entity">
+                                    <div class="flow-arrow-up">↑</div>
+                                    <div class="flow-entity-name">Entity 1</div>
+                                    <div class="flow-entity-product">Product B txns</div>
+                                </div>
+                                <div class="flow-entity">
+                                    <div class="flow-arrow-up">↑</div>
+                                    <div class="flow-entity-name">Entity 2</div>
+                                    <div class="flow-entity-product">Product B txns</div>
+                                </div>
+                                <div class="flow-entity">
+                                    <div class="flow-arrow-up">↑</div>
+                                    <div class="flow-entity-name">Entity 3</div>
+                                    <div class="flow-entity-product">Product B txns</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="model-key-point">
+                            <div class="key-point-label">Coverage Lives On</div>
+                            <div class="key-point-text"><strong>Product definition itself</strong> — no individual entity assignment exists</div>
+                        </div>
+                    </div>
+
+                    <!-- Model 3 -->
+                    <div class="coverage-model-card model3">
+                        <div class="model-header">
+                            <div class="model-icon">🏷️</div>
+                            <div>
+                                <div class="model-title">Attribute-Based Coverage</div>
+                                <div class="model-subtitle">Sector / Segment Assignment</div>
+                            </div>
+                        </div>
+                        <div class="model-description">
+                            "I cover all Product X activity for entities tagged with Tech sector"
+                        </div>
+                        <div class="model-diagram">
+                            <div class="diagram-attribute-box">
+                                <div class="attribute-label">Attribute</div>
+                                <div class="attribute-value">Sector: Technology + Product X</div>
+                                <div class="attribute-coverage">Coverage: Lisa</div>
+                            </div>
+                            <div class="diagram-entities-flow">
+                                <div class="flow-entity">
+                                    <div class="flow-arrow-up">↑</div>
+                                    <div class="flow-entity-name">Tech Corp</div>
+                                    <div class="flow-entity-product">[Tech] + Prod X</div>
+                                </div>
+                                <div class="flow-entity">
+                                    <div class="flow-arrow-up">↑</div>
+                                    <div class="flow-entity-name">SoftCo</div>
+                                    <div class="flow-entity-product">[Tech] + Prod X</div>
+                                </div>
+                                <div class="flow-entity">
+                                    <div class="flow-arrow-up">↑</div>
+                                    <div class="flow-entity-name">ChipMaker</div>
+                                    <div class="flow-entity-product">[Tech] + Prod X</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="model-key-point">
+                            <div class="key-point-label">Coverage Lives On</div>
+                            <div class="key-point-text"><strong>Attribute + Product combination</strong> — outside the hierarchy, resolved via tags</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: Transaction Flow -->
+        <section class="slide" id="slide-6">
+            <div class="slide-content">
+                <header class="slide-header">
+                    <div class="slide-number">Section 06</div>
+                    <h1 class="slide-title">Transaction Resolution Flow</h1>
+                    <p class="slide-subtitle">How a transaction finds its coverage owner — based on the product's configured coverage model.</p>
+                </header>
+
+                <div class="transaction-flow-container">
+                    <!-- Scenario 1 -->
+                    <div class="flow-scenario scenario1">
+                        <div class="flow-scenario-header">
+                            <div class="flow-scenario-icon">👤</div>
+                            <div>
+                                <div class="flow-scenario-title">Scenario 1: Product-Level Coverage</div>
+                                <div class="flow-scenario-subtitle">Transaction on Acme Capital → Product A</div>
+                            </div>
+                        </div>
+                        <div class="flow-diagram">
+                            <div class="flow-step">
+                                <div class="flow-step-box">
+                                    <div class="flow-step-label">Transaction Occurs</div>
+                                    <div class="flow-step-value">$1M Trade</div>
+                                    <div class="flow-step-detail">Product A activity</div>
+                                </div>
+                            </div>
+                            <div class="flow-connector">→</div>
+                            <div class="flow-step">
+                                <div class="flow-step-box highlight-blue">
+                                    <div class="flow-step-label">Entity</div>
+                                    <div class="flow-step-value">Acme Capital</div>
+                                    <div class="flow-step-detail">Legal entity level</div>
+                                </div>
+                            </div>
+                            <div class="flow-connector">→</div>
+                            <div class="flow-step">
+                                <div class="flow-step-box highlight-amber">
+                                    <div class="flow-step-label">Product Attachment</div>
+                                    <div class="flow-step-value">Product A</div>
+                                    <div class="flow-step-detail">coverage_model: per_entity</div>
+                                </div>
+                            </div>
+                            <div class="flow-connector">→</div>
+                            <div class="flow-step">
+                                <div class="flow-step-box highlight-emerald">
+                                    <div class="flow-step-label">Coverage Found</div>
+                                    <div class="flow-step-value">Sarah</div>
+                                    <div class="flow-step-detail">On entity-product attachment</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flow-resolution">
+                            <div class="resolution-icon">✓</div>
+                            <div class="resolution-text">
+                                <div class="resolution-label">Resolution</div>
+                                <div class="resolution-value">Sarah gets credit for this transaction</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scenario 2 -->
+                    <div class="flow-scenario scenario2">
+                        <div class="flow-scenario-header">
+                            <div class="flow-scenario-icon">🪣</div>
+                            <div>
+                                <div class="flow-scenario-title">Scenario 2: Product Desk Bucket</div>
+                                <div class="flow-scenario-subtitle">Transaction on Beta Fund → Product B</div>
+                            </div>
+                        </div>
+                        <div class="flow-diagram">
+                            <div class="flow-step">
+                                <div class="flow-step-box">
+                                    <div class="flow-step-label">Transaction Occurs</div>
+                                    <div class="flow-step-value">$500K Trade</div>
+                                    <div class="flow-step-detail">Product B activity</div>
+                                </div>
+                            </div>
+                            <div class="flow-connector">→</div>
+                            <div class="flow-step">
+                                <div class="flow-step-box highlight-blue">
+                                    <div class="flow-step-label">Entity</div>
+                                    <div class="flow-step-value">Beta Fund</div>
+                                    <div class="flow-step-detail">Legal entity level</div>
+                                </div>
+                            </div>
+                            <div class="flow-connector">→</div>
+                            <div class="flow-step">
+                                <div class="flow-step-box highlight-amber">
+                                    <div class="flow-step-label">Product Attachment</div>
+                                    <div class="flow-step-value">Product B</div>
+                                    <div class="flow-step-detail">coverage_model: desk_bucket</div>
+                                </div>
+                            </div>
+                            <div class="flow-connector">→</div>
+                            <div class="flow-step">
+                                <div class="flow-step-box highlight-emerald">
+                                    <div class="flow-step-label">Lookup Product Def</div>
+                                    <div class="flow-step-value">Desk B Team</div>
+                                    <div class="flow-step-detail">Global bucket coverage</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flow-resolution">
+                            <div class="resolution-icon">✓</div>
+                            <div class="resolution-text">
+                                <div class="resolution-label">Resolution</div>
+                                <div class="resolution-value">Product Desk B Team (pool) — no individual assignment</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scenario 3 -->
+                    <div class="flow-scenario scenario3">
+                        <div class="flow-scenario-header">
+                            <div class="flow-scenario-icon">🏷️</div>
+                            <div>
+                                <div class="flow-scenario-title">Scenario 3: Attribute-Based Coverage</div>
+                                <div class="flow-scenario-subtitle">Transaction on Tech Corp [Sector: Technology] → Product X</div>
+                            </div>
+                        </div>
+                        <div class="flow-diagram">
+                            <div class="flow-step">
+                                <div class="flow-step-box">
+                                    <div class="flow-step-label">Transaction Occurs</div>
+                                    <div class="flow-step-value">$2M Trade</div>
+                                    <div class="flow-step-detail">Product X activity</div>
+                                </div>
+                            </div>
+                            <div class="flow-connector">→</div>
+                            <div class="flow-step">
+                                <div class="flow-step-box highlight-blue">
+                                    <div class="flow-step-label">Entity + Attribute</div>
+                                    <div class="flow-step-value">Tech Corp</div>
+                                    <div class="flow-step-detail">Sector: Technology</div>
+                                </div>
+                            </div>
+                            <div class="flow-connector">→</div>
+                            <div class="flow-step">
+                                <div class="flow-step-box highlight-purple">
+                                    <div class="flow-step-label">Product</div>
+                                    <div class="flow-step-value">Product X</div>
+                                    <div class="flow-step-detail">coverage_model: attribute</div>
+                                </div>
+                            </div>
+                            <div class="flow-connector">→</div>
+                            <div class="flow-step">
+                                <div class="flow-step-box highlight-emerald">
+                                    <div class="flow-step-label">Attribute Matrix Lookup</div>
+                                    <div class="flow-step-value">Lisa</div>
+                                    <div class="flow-step-detail">Tech + Product X → Lisa</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flow-resolution">
+                            <div class="resolution-icon">✓</div>
+                            <div class="resolution-text">
+                                <div class="resolution-label">Resolution</div>
+                                <div class="resolution-value">Lisa gets credit (covers all Tech sector + Product X)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Configuration Callout -->
+                <div class="product-config-callout">
+                    <div class="config-callout-header">
+                        <div class="config-callout-icon">⚙️</div>
+                        <div>
+                            <div class="config-callout-title">Product Configuration Drives Resolution</div>
+                            <div class="config-callout-subtitle">Each product defines how its coverage model works</div>
+                        </div>
+                    </div>
+                    <div class="config-code-block">
+                        <div class="code-line"><span class="code-key">Product Definition</span> <span class="code-bracket">{</span></div>
+                        <div class="code-line code-indent"><span class="code-key">product_id:</span> <span class="code-value">"product_a"</span></div>
+                        <div class="code-line code-indent"><span class="code-key">product_name:</span> <span class="code-value">"Product A"</span></div>
+                        <div class="code-line code-indent"><span class="code-key">coverage_model:</span> <span class="code-value">"per_entity"</span> | <span class="code-value">"desk_bucket"</span> | <span class="code-value">"attribute_based"</span></div>
+                        <div class="code-line code-indent"><span class="code-comment">// If desk_bucket:</span></div>
+                        <div class="code-line code-indent"><span class="code-key">desk_coverage:</span> <span class="code-value">"Desk B Team"</span></div>
+                        <div class="code-line code-indent"><span class="code-comment">// If attribute_based:</span></div>
+                        <div class="code-line code-indent"><span class="code-key">coverage_attribute:</span> <span class="code-value">"sector"</span> <span class="code-comment">// or "region", "strategy", etc.</span></div>
+                        <div class="code-line"><span class="code-bracket">}</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Navigation functionality
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const slides = document.querySelectorAll('.slide');
+
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const slideNum = btn.dataset.slide;
+                
+                // Update nav buttons
+                navBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Update slides
+                slides.forEach(s => s.classList.remove('active'));
+                document.getElementById(`slide-${slideNum}`).classList.add('active');
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const currentSlide = document.querySelector('.slide.active');
+            const currentNum = parseInt(currentSlide.id.split('-')[1]);
+            
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                const nextNum = Math.min(currentNum + 1, 6);
+                document.querySelector(`[data-slide="${nextNum}"]`).click();
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                const prevNum = Math.max(currentNum - 1, 1);
+                document.querySelector(`[data-slide="${prevNum}"]`).click();
+            }
+        });
+    </script>
+</body>
+</html>
